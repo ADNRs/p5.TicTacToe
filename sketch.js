@@ -1,7 +1,14 @@
+let width
+let height
+
 function setup() {
-  // put setup code here
+  width = windowWidth
+  height = windowHeight
+  createCanvas(width, height)
+  board = new Board(width, height)
 }
 
 function draw() {
-  // put drawing code here
+  background(125)
+  board.draw()
 }
