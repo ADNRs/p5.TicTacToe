@@ -14,36 +14,36 @@ class Board {
 
   setup() {
     let center = { x: this.width / 2, y: this.height / 2 };
-    let blockWidth = this.height / 5
-    let lineLength = this.height * 0.6
+    this.blockWidth = this.height / 5
+    this.lineLength = this.height * 0.6
     this.boardLines = [
       {
-        x1: center.x - lineLength/2, y1: center.y - blockWidth/2,
-        x2: center.x + lineLength/2, y2: center.y - blockWidth/2
+        x1: center.x - this.lineLength/2, y1: center.y - this.blockWidth/2,
+        x2: center.x + this.lineLength/2, y2: center.y - this.blockWidth/2
       },
       {
-        x1: center.x - lineLength/2, y1: center.y + blockWidth/2,
-        x2: center.x + lineLength/2, y2: center.y + blockWidth/2
+        x1: center.x - this.lineLength/2, y1: center.y + this.blockWidth/2,
+        x2: center.x + this.lineLength/2, y2: center.y + this.blockWidth/2
       },
       {
-        x1: center.x - blockWidth/2, y1: center.y - lineLength/2,
-        x2: center.x - blockWidth/2, y2: center.y + lineLength/2
+        x1: center.x - this.blockWidth/2, y1: center.y - this.lineLength/2,
+        x2: center.x - this.blockWidth/2, y2: center.y + this.lineLength/2
       },
       {
-        x1: center.x + blockWidth/2, y1: center.y - lineLength/2,
-        x2: center.x + blockWidth/2, y2: center.y + lineLength/2
+        x1: center.x + this.blockWidth/2, y1: center.y - this.lineLength/2,
+        x2: center.x + this.blockWidth/2, y2: center.y + this.lineLength/2
       }
     ]
     this.symbolsCoord = [
-      { x: center.x - blockWidth, y: center.y - blockWidth },
-      { x: center.x,              y: center.y - blockWidth },
-      { x: center.x + blockWidth, y: center.y - blockWidth },
-      { x: center.x - blockWidth, y: center.y              },
-      { x: center.x,              y: center.y              },
-      { x: center.x + blockWidth, y: center.y              },
-      { x: center.x - blockWidth, y: center.y + blockWidth },
-      { x: center.x,              y: center.y + blockWidth },
-      { x: center.x + blockWidth, y: center.y + blockWidth }
+      { x: center.x - this.blockWidth, y: center.y - this.blockWidth },
+      { x: center.x,                   y: center.y - this.blockWidth },
+      { x: center.x + this.blockWidth, y: center.y - this.blockWidth },
+      { x: center.x - this.blockWidth, y: center.y                   },
+      { x: center.x,                   y: center.y                   },
+      { x: center.x + this.blockWidth, y: center.y                   },
+      { x: center.x - this.blockWidth, y: center.y + this.blockWidth },
+      { x: center.x,                   y: center.y + this.blockWidth },
+      { x: center.x + this.blockWidth, y: center.y + this.blockWidth }
     ]
     this.drawLine = function(_line) {
       line(_line.x1, _line.y1, _line.x2, _line.y2)
@@ -58,22 +58,22 @@ class Board {
     }
     this.drawO = function(_coord) {
       noFill()
-      circle(_coord.x, _coord.y, blockWidth/2)
+      circle(_coord.x, _coord.y, this.blockWidth/2)
       fill(255)
     }
     this.drawX = function(_coord) {
       let slashes = [
         {
-          x1: _coord.x + blockWidth/4,
-          y1: _coord.y + blockWidth/4,
-          x2: _coord.x - blockWidth/4,
-          y2: _coord.y - blockWidth/4
+          x1: _coord.x + this.blockWidth/4,
+          y1: _coord.y + this.blockWidth/4,
+          x2: _coord.x - this.blockWidth/4,
+          y2: _coord.y - this.blockWidth/4
         },
         {
-          x1: _coord.x - blockWidth/4,
-          y1: _coord.y + blockWidth/4,
-          x2: _coord.x + blockWidth/4,
-          y2: _coord.y - blockWidth/4
+          x1: _coord.x - this.blockWidth/4,
+          y1: _coord.y + this.blockWidth/4,
+          x2: _coord.x + this.blockWidth/4,
+          y2: _coord.y - this.blockWidth/4
         }
       ]
       for (let slash of slashes) {
@@ -123,8 +123,8 @@ class Board {
 
   checkStatus() {
     let cnt = 0
-    for (let x = 0; x < 9; x++) {
-      cnt += this.symbols[x] == ' '
+    for (let i = 0; i < 9; i++) {
+      cnt += (this.symbols[i] == 'O') || (this.symbols[i] == 'X')
     }
 
     if (this.__checkSymbolWin('O')) {
@@ -134,5 +134,17 @@ class Board {
     } else if (cnt == 9) {
       this.status = DRAW
     }
+  }
+
+  getIdxByCoord(coord) {
+    let halfBW = this.blockWidth / 2
+    for (let i = 0; i < 9; i++) {
+      if ((this.symbolsCoord[i].x - halfBW <= coord.x) && (coord.x <= this.symbolsCoord[i].x + halfBW)) {
+        if ((this.symbolsCoord[i].y - halfBW <= coord.y) && (coord.y <= this.symbolsCoord[i].y + halfBW)) {
+          return i
+        }
+      }
+    }
+    return -1
   }
 }
