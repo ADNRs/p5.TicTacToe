@@ -128,12 +128,18 @@ class Board {
     }
 
     if (this.__checkSymbolWin('O')) {
-      this.status = OWIN
+      return OWIN
     } else if (this.__checkSymbolWin('X')) {
-      this.status = XWIN
+      return XWIN
     } else if (cnt == 9) {
-      this.status = DRAW
+      return DRAW
+    } else {
+      return GOON
     }
+  }
+
+  updateStatus() {
+    this.status = this.checkStatus()
   }
 
   getIdxByCoord(coord) {

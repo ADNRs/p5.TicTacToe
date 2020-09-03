@@ -17,6 +17,7 @@ class HumanPlayer {
 class ComputerPlayer {
   constructor() {
     this.symbol = ' '
+    this.isFirstMove = true
   }
 
   setSymbol(symbol) {
@@ -24,11 +25,13 @@ class ComputerPlayer {
   }
 
   move(symbols) {
-    return Math.round(random(0, 9))
-    for (let x = 0; x < 9; x++) {
-      if (symbols[x] == ' ') {
-        return x
-      }
-    }
+    if (this.isFirstMove) {
+      this.isFirstMove = false
+     return Math.round(random(0, 9))
+   } else {
+     let gameTree = new GameTree(symbols)
+     gameTree.build()
+     return gameTree.getBestMove()
+   }
   }
 }

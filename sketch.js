@@ -61,7 +61,7 @@ function draw() {
   }
 
   let prevStatus = board.status
-  board.checkStatus()
+  board.updateStatus()
   if (prevStatus != board.status) {
     if (board.status == OWIN) {
       P1Score += 1
@@ -139,7 +139,7 @@ function drawInfo() {
   let p1str = leftPad(P1Score + '', 2)
   let p2str = leftPad(P2Score + '', 2)
   let dstr = leftPad(DScore + '', 2)
-  
+
   printed_str = 'Round ' + round + '\n\n'
   printed_str += '1P vs 2P\n'
   printed_str += p1str + '-' + dstr + '-' + p2str
