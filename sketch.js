@@ -48,7 +48,7 @@ function setup() {
   buttonEvE.position(buttonPvE.x, buttonPvP.y + buttonPvP.width)
   buttonEvE.mousePressed(eve)
 
-  eve()
+  pve()
 }
 
 function draw() {
@@ -60,21 +60,21 @@ function draw() {
     player = player2
   }
 
-  let prevStatus = board.status
-  board.updateStatus()
-  if (prevStatus != board.status) {
-    if (board.status == OWIN) {
+  let prevState = board.state
+  board.updateState()
+  if (prevState != board.state) {
+    if (board.state == OWIN) {
       P1Score += 1
-    } else if (board.status == XWIN) {
+    } else if (board.state == XWIN) {
       P2Score += 1
-    } else if (board.status == DRAW) {
+    } else if (board.state == DRAW) {
       DScore += 1
     }
   }
 
   board.draw()
   drawInfo()
-  if (board.status != GOON) {
+  if (board.state != GOON) {
     return
   }
   let loc = player.move(board.symbols)
@@ -123,7 +123,7 @@ function restart() {
 
 function mousePressed() {
   playerCoord = { x: mouseX, y: mouseY }
-  if (board.status != GOON) {
+  if (board.state != GOON) {
     restart()
   }
 }

@@ -8,7 +8,7 @@ class Board {
     this.width = width
     this.height = height
     this.symbols = [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']
-    this.status = GOON
+    this.state = GOON
     this.setup()
   }
 
@@ -94,7 +94,7 @@ class Board {
 
   reset() {
     this.symbols = [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']
-    this.status = GOON
+    this.state = GOON
   }
 
   isValidMove(idx) {
@@ -121,7 +121,7 @@ class Board {
     return false
   }
 
-  checkStatus() {
+  checkState() {
     let cnt = 0
     for (let i = 0; i < 9; i++) {
       cnt += (this.symbols[i] == 'O') || (this.symbols[i] == 'X')
@@ -138,8 +138,8 @@ class Board {
     }
   }
 
-  updateStatus() {
-    this.status = this.checkStatus()
+  updateState() {
+    this.state = this.checkState()
   }
 
   getIdxByCoord(coord) {
