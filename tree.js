@@ -1,7 +1,7 @@
-let WINSCORE = 10
-let GOONSCORE = 3
-let DRAWSCORE = 0
-let LOSESCORE = -10
+let WINSCORE = 3
+let GOONSCORE = 2
+let DRAWSCORE = 1
+let LOSESCORE = 0
 
 function isValidMove(symbols, idx) {
   return symbols[idx] == ' '
@@ -49,31 +49,23 @@ function getScore(symbols, symbol) {
   let state = checkState(symbols)
 
   if (state == DRAW) {
-    score += DRAWSCORE
+    score = DRAWSCORE
   } else if (state == GOON) {
-    score += GOONSCORE
+    score = GOONSCORE
   } else if (state == OWIN && symbol == 'O') {
-    score += WINSCORE
+    score = WINSCORE
   } else if (state == XWIN && symbol == 'X') {
-    score += WINSCORE
+    score = WINSCORE
   } else {
-    score += LOSESCORE
+    score = LOSESCORE
   }
 
   return score
 }
 
-function getMinimaxType(depth) {
-  if (depth % 2) {
-    return 'max'
-  } else {
-    return 'min'
-  }
-}
-
 class GameTree {
   constructor(symbols, symbol) {
-    this.root = new GameTreeNode()
+    this.root = new GameTreeNode(-1)
     this.symbols = symbols
     this.symbol = symbol
   }
@@ -96,35 +88,31 @@ class GameTree {
 
   __buildMinimax(node, alpha, beta, minimaxType) {
     if (node.score != undefined) {
-      return { score: node.score, move: node.move }
+      return
     }
 
     if (minimaxType == 'max') {
-      let val = { score: -Infinity, move: undefined }
+      let val = -Infinity
       for (let child of node.children) {
-        let rtVal = this.__buildMinimax(child, alpha, beta, 'min')
-        if (val.score != Math.max(val.score, rtVal.socre)) {
-          val = rtVal
-        }
-        alpha = Math.max(alpha, val.score)
+        this.__buildMinimax(child, alpha, beta, 'min')
+        val = Math.max(val, child.score)
+        alpha = Math.max(alpha, val)
         if (beta <= alpha) {
           break
         }
       }
-      return val
+      node.score = val
     } else {
-      let val = { score: Infinity, move: undefined }
+      let val = Infinity
       for (let child of node.children) {
-        let rtVal = this.__buildMinimax(child, alpha, beta, 'max')
-        if (val.score != Math.min(val.score, rtVal.score)) {
-          val = rtVal
-        }
-        beta = Math.min(beta, val.score)
+        this.__buildMinimax(child, alpha, beta, 'max')
+        val = Math.min(val, child.score)
+        beta = Math.min(beta, val)
         if (beta <= alpha) {
           break
         }
       }
-      return val
+      node.score = val
     }
   }
 
@@ -133,14 +121,12 @@ class GameTree {
       symbols[node.move] = symbol
     }
 
-    // boundary condition
     let state = checkState(symbols)
     if (currDepth == destDepth || state != GOON) {
       node.score = getScore(symbols, this.symbol)
       return
     }
 
-    // grow children
     for (let i = 0; i < 9; i++) {
       if (!isValidMove(symbols, i)) {
         continue
@@ -152,16 +138,20 @@ class GameTree {
       node.children.push(child)
       this.__buildHelper(child, copiedSymbols, useSymbol, currDepth+1, destDepth, alpha, beta)
     }
-
-    // do minimax with alpha beta prune
-
   }
 
   build() {
-    this.__buildHelper(this.root, this.symbols, ' ', 0, 3, 0, 0)
-    console.log('Finish building')
-    let rtVal = this.__buildMinimax(this.root, -Infinity, Infinity, 'max')
-    this.root.move = rtVal.move
+    this.__buildHelper(this.root, this.symbols, ' ', 0, 6, 0, 0)
+    this.__buildMinimax(this.root, -Infinity, Infinity, 'max')
+
+    let bestMove, maxVal = -Infinity
+    for (let child of this.root.children) {
+      if (child.score > maxVal) {
+        maxVal = child.score
+        bestMove = child.move
+      }
+    }
+    this.root.move = bestMove
   }
 
   getBestMove() {
@@ -171,7 +161,7 @@ class GameTree {
 
 class GameTreeNode {
   constructor(move, score, children) {
-    this.move = move || -1
+    this.move = move
     this.score = score
     this.children = children || []
   }

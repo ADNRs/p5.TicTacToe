@@ -48,7 +48,7 @@ function setup() {
   buttonEvE.position(buttonPvE.x, buttonPvP.y + buttonPvP.width)
   buttonEvE.mousePressed(eve)
 
-  pve()
+  eve()
 }
 
 function draw() {
