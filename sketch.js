@@ -6,16 +6,12 @@ let board
 let player1
 let player2
 let round = 1
-let playerIndicator
-let P1 = 0
-let P2 = 1
+let playerIndicator = PLAYER1
 let playerCoord = { x: 0, y: 0 }
 let P1Score = 0
 let P2Score = 0
 let DScore = 0
 // display
-let roundElem
-let buttonRst
 let buttonPvE
 let buttonPvP
 let buttonEvE
@@ -48,18 +44,19 @@ function setup() {
   buttonEvE.position(buttonPvE.x, buttonPvP.y + buttonPvP.width)
   buttonEvE.mousePressed(eve)
 
-  eve()
+  eve() // preset the game mode to environment vs environment
 }
 
 function draw() {
-  // game logic
+  // select player by playerIndicator
   let player
-  if (playerIndicator == P1) {
+  if (playerIndicator == PLAYER1) {
     player = player1
   } else {
     player = player2
   }
 
+  // update state of game board and score if state changed
   let prevState = board.state
   board.updateState()
   if (prevState != board.state) {
@@ -72,41 +69,46 @@ function draw() {
     }
   }
 
+  // draw the game board itself, and display related infomation
   board.draw()
   drawInfo()
+
+  // early return if the game is finished
   if (board.state != GOON) {
     return
   }
-  let loc = player.move(board.symbols)
-  if (board.isValidMove(loc)) {
-    board.symbols[loc] = player.symbol
-    playerIndicator = !playerIndicator
+
+  // let player decide where to move
+  let idx = player.move(board.symbols)
+  if (board.isValidMove(board.symbols, idx)) {
+    board.symbols[idx] = player.symbol
+    // once the move is valid, change the player
+    if (playerIndicator == PLAYER1) {
+      playerIndicator = PLAYER2
+    } else {
+      playerIndicator = PLAYER1
+    }
   } else {
     return
   }
 }
 
 function pve() {
-  player1 = new HumanPlayer()
-  player2 = new ComputerPlayer()
-  changeModeRst()
+  modeChangeReset(HumanPlayer, ComputerPlayer)
 }
 
 function pvp() {
-  player1 = new HumanPlayer()
-  player2 = new HumanPlayer()
-  changeModeRst()
+  modeChangeReset(HumanPlayer, HumanPlayer)
 }
 
 function eve() {
-  player1 = new ComputerPlayer()
-  player2 = new ComputerPlayer()
-  changeModeRst()
+  modeChangeReset(ComputerPlayer, ComputerPlayer)
+  // setInterval(restart, 250)
 }
 
-function changeModeRst() {
-  player1.setSymbol('O')
-  player2.setSymbol('X')
+function modeChangeReset(P1Type, P2Type) {
+  player1 = new P1Type('O')
+  player2 = new P2Type('X')
   round = 0
   P1Score = 0
   P2Score = 0
@@ -117,7 +119,7 @@ function changeModeRst() {
 function restart() {
   board.reset()
   round += 1
-  playerIndicator = P1
+  playerIndicator = PLAYER1
   playerCoord = { x: 0, y: 0 }
 }
 
@@ -140,8 +142,8 @@ function drawInfo() {
   let p2str = leftPad(P2Score + '', 2)
   let dstr = leftPad(DScore + '', 2)
 
-  printed_str = 'Round ' + round + '\n\n'
-  printed_str += '1P vs 2P\n'
-  printed_str += p1str + '-' + dstr + '-' + p2str
-  text(printed_str, height*0.1, height*0.1)
+  printStr = 'Round ' + round + '\n\n'
+  printStr += '1P vs 2P\n'
+  printStr += p1str + '-' + dstr + '-' + p2str
+  text(printStr, height*0.1, height*0.1)
 }

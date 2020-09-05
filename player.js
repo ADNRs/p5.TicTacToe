@@ -1,9 +1,5 @@
 class HumanPlayer {
-  constructor() {
-    this.symbol = ' '
-  }
-
-  setSymbol(symbol) {
+  constructor(symbol) {
     this.symbol = symbol
   }
 
@@ -14,12 +10,25 @@ class HumanPlayer {
   }
 }
 
-class ComputerPlayer {
-  constructor() {
-    this.symbol = ' '
+class RandomPlayer {
+  constructor(symbol) {
+    this.symbol = symbol
   }
 
-  setSymbol(symbol) {
+  move(symbols) {
+    let nonOccupiedIdx = new Array()
+    for (let i = 0; i < 9; i++) {
+      if (symbols[i] == ' ') {
+        nonOccupiedIdx.push(i)
+      }
+    }
+
+    return random(nonOccupiedIdx)
+  }
+}
+
+class ComputerPlayer {
+  constructor(symbol) {
     this.symbol = symbol
   }
 
@@ -32,8 +41,10 @@ class ComputerPlayer {
     if (cnt == 9) {
       return Math.round(random(0, 9))
     }
+
     let gameTree = new GameTree(symbols, this.symbol)
     gameTree.build()
+
     return gameTree.getBestMove()
   }
 }

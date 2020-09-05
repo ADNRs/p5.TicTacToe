@@ -1,14 +1,8 @@
-let GOON = 0
-let OWIN = 1
-let XWIN = 2
-let DRAW = 3
-
 class Board {
   constructor(width, height) {
     this.width = width
     this.height = height
-    this.symbols = [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']
-    this.state = GOON
+    this.reset()
     this.setup()
   }
 
@@ -97,39 +91,39 @@ class Board {
     this.state = GOON
   }
 
-  isValidMove(idx) {
-    return this.symbols[idx] == ' '
+  isValidMove(symbols, idx) {
+    return symbols[idx] == ' '
   }
 
-  __checkSymbolWin(symbol) {
+  checkSymbolWin(symbols, symbol) {
     for (let x = 0; x <= 6; x += 3) {
-      if ((this.symbols[x] == this.symbols[x+1]) && (this.symbols[x+1] == this.symbols[x+2]) && (this.symbols[x] == symbol)) {
+      if ((symbols[x] == symbols[x+1]) && (symbols[x+1] == symbols[x+2]) && (symbols[x] == symbol)) {
         return true
       }
     }
     for (let x = 0; x < 3; x++) {
-      if ((this.symbols[x] == this.symbols[x+3]) && (this.symbols[x+3] == this.symbols[x+6]) && (this.symbols[x] == symbol)) {
+      if ((symbols[x] == symbols[x+3]) && (symbols[x+3] == symbols[x+6]) && (symbols[x] == symbol)) {
         return true
       }
     }
-    if ((this.symbols[0] == this.symbols[4]) && (this.symbols[4] == this.symbols[8]) && (this.symbols[0] == symbol)) {
+    if ((symbols[0] == symbols[4]) && (symbols[4] == symbols[8]) && (symbols[0] == symbol)) {
       return true
     }
-    if ((this.symbols[2] == this.symbols[4]) && (this.symbols[4] == this.symbols[6]) && (this.symbols[2] == symbol)) {
+    if ((symbols[2] == symbols[4]) && (symbols[4] == symbols[6]) && (symbols[2] == symbol)) {
       return true
     }
     return false
   }
 
-  checkState() {
+  checkState(symbols) {
     let cnt = 0
     for (let i = 0; i < 9; i++) {
-      cnt += (this.symbols[i] == 'O') || (this.symbols[i] == 'X')
+      cnt += symbols[i] != ' '
     }
 
-    if (this.__checkSymbolWin('O')) {
+    if (this.checkSymbolWin(symbols, 'O')) {
       return OWIN
-    } else if (this.__checkSymbolWin('X')) {
+    } else if (this.checkSymbolWin(symbols, 'X')) {
       return XWIN
     } else if (cnt == 9) {
       return DRAW
@@ -139,7 +133,7 @@ class Board {
   }
 
   updateState() {
-    this.state = this.checkState()
+    this.state = this.checkState(this.symbols)
   }
 
   getIdxByCoord(coord) {
