@@ -100,10 +100,63 @@ class GameTree {
     }
   }
 
+  __buildMix(node, symbols, symbol, currDepth, destDepth, alpha, beta, minimaxType) {
+    if (node.move != undefined) {
+      symbols[node.move] = symbol
+    } else {
+      symbol = symbol == 'O' ? 'X' : 'O'
+    }
+
+    let state = board.checkState(symbols)
+    if (currDepth == destDepth || state != GOON) {
+      node.score = getScore(symbols, this.symbol)
+      return
+    }
+
+    if (minimaxType == 'max') {
+      let val = -Infinity
+      for (let i = 0; i < 9; i++) {
+        if (!board.isValidMove(symbols, i)) {
+          continue
+        }
+        let child = new GameTreeNode(i)
+        let copiedSymbols = Array.from(symbols)
+        let childSymbol = symbol == 'O' ? 'X' : 'O'
+        node.children.push(child)
+        this.__buildMix(child, copiedSymbols, childSymbol, currDepth+1, destDepth, alpha, beta, 'min')
+        val = Math.max(val, child.score)
+        alpha = Math.max(alpha, val)
+        if (beta <= alpha) {
+          break
+        }
+      }
+      node.score = val
+    } else {
+      let val = Infinity
+      for (let i = 0; i < 9; i++) {
+        if (!board.isValidMove(symbols, i)) {
+          continue
+        }
+        let child = new GameTreeNode(i)
+        let copiedSymbols = Array.from(symbols)
+        let childSymbol = symbol == 'O' ? 'X' : 'O'
+        node.children.push(child)
+        this.__buildMix(child, copiedSymbols, childSymbol, currDepth+1, destDepth, alpha, beta, 'max')
+        val = Math.min(val, child.score)
+        beta = Math.min(beta, val)
+        if (beta <= alpha) {
+          break
+        }
+      }
+      node.score = val
+    }
+  }
+
   build() {
-    this.__buildHelper(this.root, this.symbols, this.symbol, 0, 6)
+    // this.__buildHelper(this.root, this.symbols, this.symbol, 0, Infinity)
     // this.__buildMinimax(this.root, 'max')
-    this.__buildMinimaxWithPrune(this.root, -Infinity, Infinity, 'max')
+    // this.__buildMinimaxWithPrune(this.root, -Infinity, Infinity, 'max')
+    this.__buildMix(this.root, this.symbols, this.symbol, 0, Infinity, -Infinity, Infinity, 'max')
 
     let bestMove, maxVal = -Infinity
     for (let child of this.root.children) {

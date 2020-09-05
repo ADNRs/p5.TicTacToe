@@ -5,9 +5,10 @@ let height
 let board
 let player1
 let player2
-let round = 1
 let playerIndicator = PLAYER1
 let playerCoord = { x: 0, y: 0 }
+// game information
+let round = 1
 let P1Score = 0
 let P2Score = 0
 let DScore = 0
@@ -88,8 +89,6 @@ function draw() {
     } else {
       playerIndicator = PLAYER1
     }
-  } else {
-    return
   }
 }
 
@@ -102,8 +101,8 @@ function pvp() {
 }
 
 function eve() {
-  modeChangeReset(ComputerPlayer, ComputerPlayer)
-  // setInterval(restart, 250)
+  modeChangeReset(ComputerPlayer, RandomPlayer)
+  // setInterval(gameRestart, 1000)
 }
 
 function modeChangeReset(P1Type, P2Type) {
@@ -113,10 +112,10 @@ function modeChangeReset(P1Type, P2Type) {
   P1Score = 0
   P2Score = 0
   DScore = 0
-  restart()
+  gameRestart()
 }
 
-function restart() {
+function gameRestart() {
   board.reset()
   round += 1
   playerIndicator = PLAYER1
@@ -126,7 +125,7 @@ function restart() {
 function mousePressed() {
   playerCoord = { x: mouseX, y: mouseY }
   if (board.state != GOON) {
-    restart()
+    gameRestart()
   }
 }
 
