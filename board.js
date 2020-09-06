@@ -51,9 +51,7 @@ class Board {
       }
     }
     this.drawO = function(_coord) {
-      noFill()
       circle(_coord.x, _coord.y, this.blockWidth/2)
-      fill(255)
     }
     this.drawX = function(_coord) {
       let slashes = [
@@ -77,13 +75,18 @@ class Board {
   }
 
   draw() {
-    background(125)
+    background('#282726')
     for (let boardLine of this.boardLines) {
+      strokeWeight(3)
+      stroke('#A7414A')
       this.drawLine(boardLine)
     }
     for (let i = 0; i < 9; i++) {
+      noFill()
       this.drawSymbol(this.symbols[i], this.symbolsCoord[i])
+      fill('#A7414A')
     }
+    noStroke()
   }
 
   reset() {

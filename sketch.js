@@ -23,7 +23,6 @@ function preload() {
   font = loadFont('./assets/CascadiaCode.ttf')
 }
 
-
 function setup() {
   width = windowWidth
   height = windowHeight
@@ -32,17 +31,18 @@ function setup() {
 
   textFont(font)
   textSize(fontsize)
+  textAlign(CENTER)
 
   buttonPvE = createButton('PvE')
-  buttonPvE.position(width*0.9, height*0.6)
+  buttonPvE.position(width-buttonPvE.width*5, height*0.9)
   buttonPvE.mousePressed(pve)
 
   buttonPvP = createButton('PvP')
-  buttonPvP.position(buttonPvE.x, buttonPvE.y + buttonPvE.width)
+  buttonPvP.position(buttonPvE.x + buttonPvE.width, buttonPvE.y)
   buttonPvP.mousePressed(pvp)
 
   buttonEvE = createButton('EvE')
-  buttonEvE.position(buttonPvE.x, buttonPvP.y + buttonPvP.width)
+  buttonEvE.position(buttonPvP.x + buttonPvP.width, buttonPvE.y)
   buttonEvE.mousePressed(eve)
 
   eve() // preset the game mode to environment vs environment
@@ -102,7 +102,7 @@ function pvp() {
 
 function eve() {
   modeChangeReset(ComputerPlayer, RandomPlayer)
-  // setInterval(gameRestart, 1000)
+  // setInterval(gameRestart, 200)
 }
 
 function modeChangeReset(P1Type, P2Type) {
@@ -141,8 +141,10 @@ function drawInfo() {
   let p2str = leftPad(P2Score + '', 2)
   let dstr = leftPad(DScore + '', 2)
 
-  printStr = 'Round ' + round + '\n\n'
-  printStr += '1P vs 2P\n'
+  let printStr = '1P vs 2P\n'
   printStr += p1str + '-' + dstr + '-' + p2str
-  text(printStr, height*0.1, height*0.1)
+  text(printStr, width*0.1, height*0.1)
+
+  let roundStr = 'Round ' + round
+  text(roundStr, width*0.5, height*0.1)
 }
