@@ -101,8 +101,8 @@ function pvp() {
 }
 
 function eve() {
-  modeChangeReset(ComputerPlayer, RandomPlayer)
-  // setInterval(gameRestart, 200)
+  modeChangeReset(ComputerPlayer, ComputerPlayer)
+  setInterval(gameRestart, 200)
 }
 
 function modeChangeReset(P1Type, P2Type) {
