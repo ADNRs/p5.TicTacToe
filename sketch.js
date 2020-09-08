@@ -18,6 +18,7 @@ let buttonPvP
 let buttonEvE
 let font
 let fontsize = 32
+let eveInterval
 
 function preload() {
   font = loadFont('./assets/CascadiaCode.ttf')
@@ -93,16 +94,18 @@ function draw() {
 }
 
 function pve() {
+  clearInterval(eveInterval)
   modeChangeReset(HumanPlayer, ComputerPlayer)
 }
 
 function pvp() {
+  clearInterval(eveInterval)
   modeChangeReset(HumanPlayer, HumanPlayer)
 }
 
 function eve() {
-  modeChangeReset(ComputerPlayer, ComputerPlayer)
-  setInterval(gameRestart, 200)
+  modeChangeReset(ComputerPlayer, RandomPlayer)
+  eveInterval = setInterval(gameRestart, 1000)
 }
 
 function modeChangeReset(P1Type, P2Type) {
