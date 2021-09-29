@@ -104,7 +104,7 @@ function pvp() {
 }
 
 function eve() {
-  modeChangeReset(ComputerPlayer, RandomPlayer)
+  modeChangeReset(ComputerPlayer, ComputerPlayer)
   eveInterval = setInterval(gameRestart, 1000)
 }
 
